@@ -2,29 +2,38 @@ package com.booking.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
+@Schema(description = "Represents an event that can be booked")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique identifier of the event", example = "1")
     private Long id;
 
     @Column(nullable = false)
+    @Schema(description = "Name of the event", example = "Tech Conference 2023")
     private String name;
 
     @Column(nullable = false)
+    @Schema(description = "Detailed description of the event", example = "Annual technology conference featuring top speakers")
     private String description;
 
     @Column(nullable = false)
+    @Schema(description = "Date and time when the event occurs", example = "2023-11-15T09:00:00")
     private LocalDateTime dateTime;
 
     @Column(nullable = false)
+    @Schema(description = "Physical location of the event", example = "Convention Center, Hall A")
     private String location;
 
     @Column(nullable = false)
+    @Schema(description = "Total number of seats available for booking", example = "500")
     private int totalSeats;
 
     @Column(nullable = false)
+    @Schema(description = "Number of seats currently available", example = "250")
     private int availableSeats;
 
     // Constructors
