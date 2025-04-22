@@ -5,6 +5,7 @@ import com.booking.model.*;
 import com.booking.repository.BookingRepository;
 import com.booking.repository.EventRepository;
 import com.booking.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.support.MessageBuilder;
@@ -22,6 +23,12 @@ public class BookingServiceImpl implements BookingService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    
+    @Value("${booking.topics.booking-created}")
+    private String bookingCreatedTopic;
+    
+    @Value("${booking.topics.booking-cancelled}")
+    private String bookingCancelledTopic;
 
     public BookingServiceImpl(BookingRepository bookingRepository,
                             EventRepository eventRepository,
@@ -55,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
         BookingCreatedEvent createdEvent = new BookingCreatedEvent(savedBooking);
         kafkaTemplate.send(MessageBuilder
                 .withPayload(createdEvent)
-                .setHeader(KafkaHeaders.TOPIC, "booking.created")
+                .setHeader(KafkaHeaders.TOPIC, bookingCreatedTopic)
                 .setHeader("__TypeId__", "bookingCreatedEvent")
                 .build());
         
@@ -98,7 +105,7 @@ public class BookingServiceImpl implements BookingService {
         BookingCancelledEvent cancelledEvent = new BookingCancelledEvent(cancelledBooking);
         kafkaTemplate.send(MessageBuilder
                 .withPayload(cancelledEvent)
-                .setHeader(KafkaHeaders.TOPIC, "booking.cancelled")
+                .setHeader(KafkaHeaders.TOPIC, bookingCancelledTopic)
                 .setHeader("__TypeId__", "bookingCancelledEvent")
                 .build());
         

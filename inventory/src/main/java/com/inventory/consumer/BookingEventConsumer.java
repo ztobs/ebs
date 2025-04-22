@@ -2,9 +2,11 @@ package com.inventory.consumer;
 
 import com.inventory.event.BookingCreatedEvent;
 import com.inventory.event.BookingCancelledEvent;
+import com.inventory.event.EventCreatedEvent;
 import com.inventory.model.Inventory;
 import com.inventory.repository.InventoryRepository;
 import com.inventory.service.InventoryService;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -37,6 +39,26 @@ public class BookingEventConsumer {
             inventoryService.cancelReservation(event.getEventId(), event.getNumberOfTickets());
         } catch (Exception e) {
             log.error("Error processing booking cancelled event", e);
+        }
+    }
+    
+    @KafkaListener(topics = "${inventory.topics.event-created}", groupId = "${spring.kafka.consumer.group-id}")
+    public void handleEventCreated(EventCreatedEvent event) {
+        log.info("Received event created event: {}", event);
+        log.info("Event details - ID: {}, Name: {}, Total Seats: {}, Available Seats: {}",
+                event.getEventId(), event.getName(), event.getTotalSeats(), event.getAvailableSeats());
+        try {
+            // Initialize inventory for the new event
+            Inventory inventory = new Inventory();
+            inventory.setEventId(event.getEventId());
+            inventory.setAvailableSeats(event.getAvailableSeats());
+            inventory.setCreatedAt(LocalDateTime.now());
+            inventory.setUpdatedAt(LocalDateTime.now());
+            
+            inventoryRepository.save(inventory);
+            log.info("Created inventory record for event: {}", event.getEventId());
+        } catch (Exception e) {
+            log.error("Error processing event created event", e);
         }
     }
 }

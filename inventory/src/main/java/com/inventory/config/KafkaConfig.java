@@ -35,7 +35,8 @@ public class KafkaConfig {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.booking.event,com.inventory.event");
         props.put(JsonDeserializer.TYPE_MAPPINGS, "bookingCreatedEvent:com.inventory.event.BookingCreatedEvent," +
-                                                 "bookingCancelledEvent:com.inventory.event.BookingCancelledEvent");
+                                                 "bookingCancelledEvent:com.inventory.event.BookingCancelledEvent," +
+                                                 "eventCreatedEvent:com.inventory.event.EventCreatedEvent");
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

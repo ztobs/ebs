@@ -11,6 +11,7 @@ kafka-topics --bootstrap-server kafka:9092 --create --topic booking.event.create
 kafka-topics --bootstrap-server kafka:9092 --create --topic booking.event.cancelled --partitions 3 --replication-factor 1
 kafka-topics --bootstrap-server kafka:9092 --create --topic booking.event.updated --partitions 3 --replication-factor 1
 kafka-topics --bootstrap-server kafka:9092 --create --topic booking.command.validate --partitions 3 --replication-factor 1
+kafka-topics --bootstrap-server kafka:9092 --create --topic event.created --partitions 3 --replication-factor 1
 
 # Inventory Service Topics
 kafka-topics --bootstrap-server kafka:9092 --create --topic inventory.event.updated --partitions 3 --replication-factor 1

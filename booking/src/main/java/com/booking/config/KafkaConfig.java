@@ -26,7 +26,10 @@ public class KafkaConfig {
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         configProps.put(JsonSerializer.TYPE_MAPPINGS, "bookingCreatedEvent:com.booking.event.BookingCreatedEvent," +
-                                                     "bookingCancelledEvent:com.booking.event.BookingCancelledEvent");
+                                                     "bookingCancelledEvent:com.booking.event.BookingCancelledEvent," +
+                                                     "eventCreatedEvent:com.booking.event.EventCreatedEvent");
+        // Add this property to ensure all fields are serialized
+        configProps.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, true);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
