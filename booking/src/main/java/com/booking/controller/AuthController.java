@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,11 +40,17 @@ public class AuthController {
         @ApiResponse(responseCode = "400", description = "Invalid request format")
     })
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authenticationService.authenticate(
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+        String token = authenticationService.authenticate(
             loginRequest.getUsername(),
             loginRequest.getPassword()
-        ));
+        );
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("type", "Bearer");
+        
+        return ResponseEntity.ok(response);
     }
 
     public static class LoginRequest {
