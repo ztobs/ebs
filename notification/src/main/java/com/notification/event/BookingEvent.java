@@ -9,6 +9,11 @@ public abstract class BookingEvent {
     private int numberOfTickets;
     private LocalDateTime timestamp;
 
+    // Default constructor needed for Jackson deserialization
+    protected BookingEvent() {
+        this.timestamp = LocalDateTime.now();
+    }
+
     public BookingEvent(Long bookingId, Long userId, Long eventId, int numberOfTickets) {
         this.bookingId = bookingId;
         this.userId = userId;
@@ -36,5 +41,26 @@ public abstract class BookingEvent {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+    
+    // Setters needed for Jackson deserialization
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    public void setNumberOfTickets(int numberOfTickets) {
+        this.numberOfTickets = numberOfTickets;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
