@@ -6,6 +6,8 @@ import com.booking.repository.BookingRepository;
 import com.booking.repository.EventRepository;
 import com.booking.repository.UserRepository;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,8 +51,13 @@ public class BookingServiceImpl implements BookingService {
         booking.setEvent(event);
         Booking savedBooking = bookingRepository.save(booking);
         
-        // Publish booking created event
-        kafkaTemplate.send("booking.created", new BookingCreatedEvent(savedBooking));
+        // Publish booking created event with type mapping
+        BookingCreatedEvent createdEvent = new BookingCreatedEvent(savedBooking);
+        kafkaTemplate.send(MessageBuilder
+                .withPayload(createdEvent)
+                .setHeader(KafkaHeaders.TOPIC, "booking.created")
+                .setHeader("__TypeId__", "bookingCreatedEvent")
+                .build());
         
         return savedBooking;
     }
@@ -87,8 +94,13 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(Booking.BookingStatus.CANCELLED);
         Booking cancelledBooking = bookingRepository.save(booking);
         
-        // Publish booking cancelled event
-        kafkaTemplate.send("booking.cancelled", new BookingCancelledEvent(cancelledBooking));
+        // Publish booking cancelled event with type mapping
+        BookingCancelledEvent cancelledEvent = new BookingCancelledEvent(cancelledBooking);
+        kafkaTemplate.send(MessageBuilder
+                .withPayload(cancelledEvent)
+                .setHeader(KafkaHeaders.TOPIC, "booking.cancelled")
+                .setHeader("__TypeId__", "bookingCancelledEvent")
+                .build());
         
         return cancelledBooking;
     }
